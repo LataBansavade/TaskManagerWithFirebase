@@ -3,6 +3,7 @@ import type { User } from "firebase/auth";
 import { AuthContext } from "./AuthContext";
 import { auth } from "../firebase/firebase";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -73,8 +74,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error: any) {
       if (error.code === "auth/email-already-in-use") {
         console.error("This email is already in use. Please log in.");
+        toast.error("This email is already in use. Please log in.");
       } else if (error.code === "auth/network-request-failed") {
         console.error("Network error. Please check your internet connection.");
+        toast.error("Network error. Please check your internet connection.");
       } else {
         console.error("Signup error:", error.message);
       }
@@ -88,6 +91,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return { success: true };
     } catch (error) {
       console.error("Password reset error:", error);
+      toast.error("Failed to send password reset email. Please try again.");
       return { success: false, message: error instanceof Error ? error.message : 'An unknown error occurred' };
     }
   };

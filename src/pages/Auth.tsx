@@ -65,8 +65,9 @@ function Auth() {
         toast.success("Signup successful!");
         navigate("/");
       }
-    } catch (error) {
-      toast.error("Signup failed. Please try again.");
+    } catch (error: any) {
+      // Display the error message from the signup function
+      toast.error(error.message || "Signup failed. Please try again.");
       console.error(error);
     } finally {
       setLoading(false); // Set loading to false
