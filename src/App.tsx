@@ -39,7 +39,7 @@ function App() {
             <Route
               path="/admin"
               element={
-                <ProtectedRoute allowedRoles="lata@gmail.com">
+                <ProtectedRoute allowedRoles="admin@gmail.com">
                   <AdminPage />
                 </ProtectedRoute>
               }

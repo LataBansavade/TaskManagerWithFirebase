@@ -122,7 +122,7 @@ const HomePage = () => {
       <div className="flex items-center justify-between gap-5 max-w-360 mx-auto py-7  px-2">
         <h1 className="text-2xl font-bold"> Hello {user?.displayName},</h1>
         <div className="flex items-center gap-3">
-          {user?.email === "lata@gmail.com" && (
+          {user?.email === "admin@gmail.com" && (
             <Button onClick={() => navigate("/admin")}>Admin</Button>
           )}
           <Button onClick={handleLogout}>Logout</Button>
