@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner"; // Import Spinner
 import {
   Card,
   CardContent,
@@ -26,23 +27,15 @@ function Auth() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // ----- LOADING STATE -----
+  const [loading, setLoading] = useState(false);
+
   // -----------------------------
   // LOGIN HANDLER
   // -----------------------------
-
-//   When to Use React.FormEvent?
-// Use React.FormEvent when handling form-related events, such as:
-
-// onSubmit
-// onChange
-// onReset
-
-// const handleLogin = (e) => {
-//   e.preventDefault(); // Works, but no type checking
-// };
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setLoading(true); // Set loading to true
     try {
       await login({ email, password });
       toast.success("Logged in successfully!");
@@ -50,6 +43,8 @@ function Auth() {
     } catch (error) {
       toast.error("Login failed. Please check your credentials.");
       console.error(error);
+    } finally {
+      setLoading(false); // Set loading to false
     }
   };
 
@@ -63,7 +58,7 @@ function Auth() {
       toast.error("Passwords do not match.");
       return;
     }
-
+    setLoading(true); // Set loading to true
     try {
       const ok = await signup({ email, password, name });
       if (ok) {
@@ -73,6 +68,8 @@ function Auth() {
     } catch (error) {
       toast.error("Signup failed. Please try again.");
       console.error(error);
+    } finally {
+      setLoading(false); // Set loading to false
     }
   };
 
@@ -81,7 +78,7 @@ function Auth() {
   // -----------------------------
   const handleForgotPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setLoading(true); // Set loading to true
     try {
       const res = await forgotPassword(email);
       if (res.success) {
@@ -92,14 +89,10 @@ function Auth() {
     } catch (error) {
       toast.error("An error occurred.");
       console.error(error);
+    } finally {
+      setLoading(false); // Set loading to false
     }
   };
-
-  // Which submit function to use?
-  
-// If isForgotPassword is true, onSubmit is set to handleForgotPassword.
-// If isForgotPassword is false but isLogin is true, onSubmit is set to handleLogin.
-// If both isForgotPassword and isLogin are false, onSubmit is set to handleSignup.
 
   const onSubmit = isForgotPassword
     ? handleForgotPassword
@@ -124,7 +117,6 @@ function Auth() {
           <CardContent>
             <form onSubmit={onSubmit}>
               <div className="flex flex-col gap-6">
-
                 {/* Name (Signup only) */}
                 {!isLogin && !isForgotPassword && (
                   <div className="grid gap-2">
@@ -177,9 +169,7 @@ function Auth() {
                       type="password"
                       placeholder="abc@123"
                       value={confirmPassword}
-                      onChange={(e) =>
-                        setConfirmPassword(e.target.value)
-                      }
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                       required
                     />
                   </div>
@@ -187,12 +177,16 @@ function Auth() {
               </div>
 
               <CardFooter className="flex-col gap-2">
-                <Button type="submit" className="w-full mt-5">
-                  {isForgotPassword
-                    ? "Send Reset Email"
-                    : isLogin
-                    ? "Login"
-                    : "Signup"}
+                <Button type="submit" className="w-full mt-5" disabled={loading}>
+                  {loading ? (
+                    <Spinner className="w-5 h-5" />
+                  ) : isForgotPassword ? (
+                    "Send Reset Email"
+                  ) : isLogin ? (
+                    "Login"
+                  ) : (
+                    "Signup"
+                  )}
                 </Button>
 
                 {isForgotPassword ? (
